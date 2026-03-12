@@ -1,0 +1,4 @@
+# Models
+*.pt
+*.pth
+*.ckpt

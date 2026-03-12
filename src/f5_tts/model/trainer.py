@@ -259,7 +259,7 @@ class Trainer:
         gc.collect()
         return update
 
-    def train(self, train_dataset: Dataset, num_workers=16, resumable_with_seed: int = None):
+    def train(self, train_dataset: Dataset, num_workers=0, resumable_with_seed: int = None):
         if self.log_samples:
             from f5_tts.infer.utils_infer import cfg_strength, load_vocoder, nfe_step, sway_sampling_coef
 
@@ -282,7 +282,7 @@ class Trainer:
                 collate_fn=collate_fn,
                 num_workers=num_workers,
                 pin_memory=True,
-                persistent_workers=True,
+                persistent_workers=False,
                 batch_size=self.batch_size_per_gpu,
                 shuffle=True,
                 generator=generator,
@@ -302,7 +302,7 @@ class Trainer:
                 collate_fn=collate_fn,
                 num_workers=num_workers,
                 pin_memory=True,
-                persistent_workers=True,
+                persistent_workers=False,
                 batch_sampler=batch_sampler,
             )
         else:
@@ -327,14 +327,31 @@ class Trainer:
         start_update = self.load_checkpoint()
         global_update = start_update
 
+        # if exists(resumable_with_seed):
+        #     orig_epoch_step = len(train_dataloader)
+        #     start_step = start_update * self.grad_accumulation_steps
+        #     skipped_epoch = int(start_step // orig_epoch_step)
+        #     skipped_batch = start_step % orig_epoch_step
+        #     skipped_dataloader = self.accelerator.skip_first_batches(train_dataloader, num_batches=skipped_batch)
+        # else:
+        #     skipped_epoch = 0
+
         if exists(resumable_with_seed):
             orig_epoch_step = len(train_dataloader)
             start_step = start_update * self.grad_accumulation_steps
-            skipped_epoch = int(start_step // orig_epoch_step)
-            skipped_batch = start_step % orig_epoch_step
+
+            # แก้ตรงนี้ ↓
+            if orig_epoch_step == 0:
+                skipped_epoch = 0
+                skipped_batch = 0
+            else:
+                skipped_epoch = int(start_step // orig_epoch_step)
+                skipped_batch = start_step % orig_epoch_step
+
             skipped_dataloader = self.accelerator.skip_first_batches(train_dataloader, num_batches=skipped_batch)
         else:
             skipped_epoch = 0
+
 
         for epoch in range(skipped_epoch, self.epochs):
             self.model.train()

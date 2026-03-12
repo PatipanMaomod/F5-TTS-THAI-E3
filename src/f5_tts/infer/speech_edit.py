@@ -8,7 +8,7 @@ import torchaudio
 
 from f5_tts.infer.utils_infer import load_checkpoint, load_vocoder, save_spectrogram
 from f5_tts.model import CFM, DiT, UNetT
-from f5_tts.model.utils import convert_char_to_pinyin, get_tokenizer
+from f5_tts.model import convert_char_to_pinyin, get_tokenizer
 
 device = (
     "cuda"

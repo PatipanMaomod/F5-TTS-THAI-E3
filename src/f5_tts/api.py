@@ -17,7 +17,7 @@ from f5_tts.infer.utils_infer import (
     save_spectrogram,
     transcribe,
 )
-from f5_tts.model.utils import seed_everything
+from f5_tts.model import seed_everything
 
 
 class F5TTS:

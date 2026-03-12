@@ -17,7 +17,7 @@ from tqdm import tqdm
 
 from datasets.arrow_writer import ArrowWriter
 
-from f5_tts.model.utils import (
+from f5_tts.model import (
     repetition_found,
     convert_char_to_pinyin,
 )

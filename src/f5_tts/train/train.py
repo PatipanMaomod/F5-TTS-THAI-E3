@@ -2,10 +2,10 @@
 
 import os
 from importlib.resources import files
-
+import multiprocessing
 import hydra
 
-from f5_tts.model import CFM, DiT, Trainer, UNetT
+from f5_tts.model import CFM, Trainer
 from f5_tts.model.dataset import load_dataset
 from f5_tts.model.utils import get_tokenizer
 
@@ -67,10 +67,12 @@ def main(cfg):
     train_dataset = load_dataset(cfg.datasets.name, tokenizer, mel_spec_kwargs=cfg.model.mel_spec)
     trainer.train(
         train_dataset,
-        num_workers=cfg.datasets.num_workers,
+        #num_workers=cfg.datasets.num_workers,
+        num_workers=0,
         resumable_with_seed=666,  # seed for shuffling dataset
     )
 
 
 if __name__ == "__main__":
+    multiprocessing.set_start_method("spawn", force=True)
     main()

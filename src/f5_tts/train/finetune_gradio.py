@@ -30,7 +30,7 @@ from scipy.io import wavfile
 
 from f5_tts.api import F5TTS
 from f5_tts.infer.utils_infer import transcribe
-from f5_tts.model.utils import convert_char_to_pinyin
+from f5_tts.model import convert_char_to_pinyin
 
 
 training_process = None
@@ -806,9 +806,9 @@ def create_metadata(name_project, ch_tokenizer, progress=gr.Progress()):
     new_vocal = ""
     if not ch_tokenizer:
         if not os.path.isfile(file_vocab):
-            file_vocab_finetune = os.path.join(path_data, "Emilia_ZH_EN_pinyin/vocab.txt")
+            file_vocab_finetune = os.path.join(path_data, "E3_by_bank/vocab.txt")
             if not os.path.isfile(file_vocab_finetune):
-                return "Error: Vocabulary file 'Emilia_ZH_EN_pinyin' not found!", ""
+                return "Error: Vocabulary file 'E3_by_bank' not found!", ""
             shutil.copy2(file_vocab_finetune, file_vocab)
 
         with open(file_vocab, "r", encoding="utf-8-sig") as f:
@@ -1005,7 +1005,7 @@ def vocab_extend(project_name, symbols, model_type):
     path_project = os.path.join(path_data, name_project)
     file_vocab_project = os.path.join(path_project, "vocab.txt")
 
-    file_vocab = os.path.join(path_data, "Emilia_ZH_EN_pinyin/vocab.txt")
+    file_vocab = os.path.join(path_data, "E3_by_bank/vocab.txt")
     if not os.path.isfile(file_vocab):
         return f"the file {file_vocab} not found !"
 
@@ -1066,7 +1066,7 @@ def vocab_check(project_name, tokenizer_type):
 
     file_metadata = os.path.join(path_project, "metadata.csv")
 
-    file_vocab = os.path.join(path_data, "Emilia_ZH_EN_pinyin/vocab.txt")
+    file_vocab = os.path.join(path_data, "E3_by_bank/vocab.txt")
     if not os.path.isfile(file_vocab):
         return f"the file {file_vocab} not found !", ""
 

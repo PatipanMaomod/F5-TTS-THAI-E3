@@ -1,10 +1,12 @@
 import argparse
 import os
 import shutil
+import warnings
+warnings.filterwarnings("ignore")
 
 from cached_path import cached_path
 
-from f5_tts.model import CFM, DiT, Trainer
+from f5_tts.model import CFM, DiT, Trainer, UNetT
 from f5_tts.model.dataset import load_dataset
 from f5_tts.model.utils import get_tokenizer
 
@@ -29,25 +31,25 @@ def parse_args():
         choices=["F5TTS_V2_Base", "F5TTS_Base"],
         help="Experiment name",
     )
-    parser.add_argument("--dataset_name", type=str, default="Emilia_ZH_EN", help="Name of the dataset to use")
+    parser.add_argument("--dataset_name", type=str, default="E3_by_bank", help="Name of the dataset to use")
     parser.add_argument("--learning_rate", type=float, default=1e-5, help="Learning rate for training")
-    parser.add_argument("--batch_size_per_gpu", type=int, default=3200, help="Batch size per GPU")
+    parser.add_argument("--batch_size_per_gpu", type=int, default=1, help="Batch size per GPU")
     parser.add_argument(
-        "--batch_size_type", type=str, default="frame", choices=["frame", "sample"], help="Batch size type"
+        "--batch_size_type", type=str, default="sample", choices=["frame", "sample"], help="Batch size type"
     )
-    parser.add_argument("--max_samples", type=int, default=64, help="Max sequences per batch")
-    parser.add_argument("--grad_accumulation_steps", type=int, default=1, help="Gradient accumulation steps")
+    parser.add_argument("--max_samples", type=int, default=2, help="Max sequences per batch")
+    parser.add_argument("--grad_accumulation_steps", type=int, default=8, help="Gradient accumulation steps")
     parser.add_argument("--max_grad_norm", type=float, default=1.0, help="Max gradient norm for clipping")
     parser.add_argument("--epochs", type=int, default=100, help="Number of training epochs")
-    parser.add_argument("--num_warmup_updates", type=int, default=20000, help="Warmup updates")
-    parser.add_argument("--save_per_updates", type=int, default=50000, help="Save checkpoint every N updates")
+    parser.add_argument("--num_warmup_updates", type=int, default=100, help="Warmup updates")
+    parser.add_argument("--save_per_updates", type=int, default=200, help="Save checkpoint every N updates")
     parser.add_argument(
         "--keep_last_n_checkpoints",
         type=int,
         default=-1,
         help="-1 to keep all, 0 to not save intermediate, > 0 to keep last N checkpoints",
     )
-    parser.add_argument("--last_per_updates", type=int, default=5000, help="Save last checkpoint every N updates")
+    parser.add_argument("--last_per_updates", type=int, default=100, help="Save last checkpoint every N updates")
     parser.add_argument("--finetune", action="store_true", help="Use Finetune")
     parser.add_argument("--pretrain", type=str, default=None, help="the path to the checkpoint")
     parser.add_argument(

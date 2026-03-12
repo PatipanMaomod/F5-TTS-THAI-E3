@@ -19,12 +19,11 @@ import torchaudio
 from tqdm import tqdm
 from datasets.arrow_writer import ArrowWriter
 
-from f5_tts.model.utils import (
+from f5_tts.model import (
     convert_char_to_pinyin,
 )
 
-
-PRETRAINED_VOCAB_PATH = files("f5_tts").joinpath("../../data/Emilia_ZH_EN_pinyin/vocab.txt")
+PRETRAINED_VOCAB_PATH = files("f5_tts").joinpath("../../data/E3_by_bank/vocab.txt")
 
 
 def is_csv_wavs_format(input_dataset_dir):
@@ -84,7 +83,7 @@ def batch_convert_texts(texts, polyphone, batch_size=BATCH_SIZE):
     """Convert a list of texts to pinyin in batches."""
     converted_texts = []
     for i in range(0, len(texts), batch_size):
-        batch = texts[i : i + batch_size]
+        batch = texts[i: i + batch_size]
         converted_batch = convert_char_to_pinyin(batch, polyphone=polyphone)
         converted_texts.extend(converted_batch)
     return converted_texts
@@ -107,22 +106,22 @@ def prepare_csv_wavs_dir(input_dir, num_workers=None):
     with graceful_exit():
         # Initialize thread pool with optimized settings
         with concurrent.futures.ThreadPoolExecutor(
-            max_workers=worker_count, thread_name_prefix=THREAD_NAME_PREFIX
+                max_workers=worker_count, thread_name_prefix=THREAD_NAME_PREFIX
         ) as exec:
             executor = exec
             results = []
 
             # Process files in chunks for better efficiency
             for i in range(0, len(audio_path_text_pairs), CHUNK_SIZE):
-                chunk = audio_path_text_pairs[i : i + CHUNK_SIZE]
+                chunk = audio_path_text_pairs[i: i + CHUNK_SIZE]
                 # Submit futures in order
                 chunk_futures = [executor.submit(process_audio_file, pair[0], pair[1], polyphone) for pair in chunk]
 
                 # Iterate over futures in the original submission order to preserve ordering
                 for future in tqdm(
-                    chunk_futures,
-                    total=len(chunk),
-                    desc=f"Processing chunk {i//CHUNK_SIZE + 1}/{(total_files + CHUNK_SIZE - 1)//CHUNK_SIZE}",
+                        chunk_futures,
+                        total=len(chunk),
+                        desc=f"Processing chunk {i // CHUNK_SIZE + 1}/{(total_files + CHUNK_SIZE - 1) // CHUNK_SIZE}",
                 ):
                     try:
                         result = future.result()
@@ -233,7 +232,7 @@ def save_prepped_dataset(out_dir, result, duration_list, text_vocab_set, is_fine
     dataset_name = out_dir.stem
     print(f"\nFor {dataset_name}, sample count: {len(result)}")
     print(f"For {dataset_name}, vocab size is: {len(text_vocab_set)}")
-    print(f"For {dataset_name}, total {sum(duration_list)/3600:.2f} hours")
+    print(f"For {dataset_name}, total {sum(duration_list) / 3600:.2f} hours")
 
 
 def prepare_and_save_set(inp_dir, out_dir, is_finetune: bool = True, num_workers: int = None):
@@ -258,10 +257,10 @@ def cli():
 Examples:
     # For fine-tuning (default):
     python prepare_csv_wavs.py /input/dataset/path /output/dataset/path
-    
+
     # For pre-training:
     python prepare_csv_wavs.py /input/dataset/path /output/dataset/path --pretrain
-    
+
     # With custom worker count:
     python prepare_csv_wavs.py /input/dataset/path /output/dataset/path --workers 4
             """,

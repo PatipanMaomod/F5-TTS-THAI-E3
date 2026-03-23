@@ -2,11 +2,12 @@ import random
 import sys
 import argparse
 from deep_translator import GoogleTranslator
+import torch
 
 from f5_tts.infer.utils_infer import (
     transcribe
 )
-from f5_tts.model import seed_everything
+from f5_tts.model.utils import seed_everything
 from f5_tts.cleantext.th_normalize import normalize_text
 from f5_tts.infer.infer_gradio import *
 

@@ -29,7 +29,7 @@ import syllapy
 from ssg import syllable_tokenize
 from f5_tts.cleantext.TH2IPA import th_to_g2p
 from f5_tts.model import CFM
-from f5_tts.model import get_tokenizer
+from f5_tts.model.utils import get_tokenizer
 
 _ref_audio_cache = {}
 

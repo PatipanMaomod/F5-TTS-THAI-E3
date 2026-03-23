@@ -1,18 +1,30 @@
 import random
 import sys
+import gradio as gr 
+import tempfile
+import torchaudio
+import soundfile as sf
+from cached_path import cached_path
 import argparse
-from deep_translator import GoogleTranslator
 import torch
+from deep_translator import GoogleTranslator
 
 from f5_tts.infer.utils_infer import (
+    infer_process,
+    load_model,
+    load_vocoder,
+    preprocess_ref_audio_text,
+    remove_silence_for_generated_wav,
+    save_spectrogram,
     transcribe
 )
+from f5_tts.model import DiT
 from f5_tts.model.utils import seed_everything
 from f5_tts.cleantext.th_normalize import normalize_text
 from f5_tts.infer.infer_gradio import *
 
-#ถ้าอยากใช้โมเดลที่อัพเดทใหม หรือโมเดลภาษาอื่น สามารถแก้ไขโค้ด Model และ Vocab เช่น default_model_base = "hf://VIZINTZOR/F5-TTS-THAI-E3/model_350000.pt"
-default_model_base = "hf://VIZINTZOR/F5-TTS-THAI-E3/model_1000000.pt"
+#ถ้าอยากใช้โมเดลที่อัพเดทใหม หรือโมเดลภาษาอื่น สามารถแก้ไขโค้ด Model และ Vocab เช่น default_model_base = "hf://VIZINTZOR/F5-TTS-THAI/model_350000.pt"
+default_model_base = "hf://VIZINTZOR/F5-TTS-THAI/model_1000000.pt"
 v2_model_base = "hf://VIZINTZOR/F5-TTS-TH-v2/model_350000.pt"
 vocab_base = "./vocab/vocab.txt"
 vocab_ipa_base = "./vocab/vocab_ipa.txt"
@@ -144,7 +156,7 @@ def create_gradio_interface():
                 value="Default",
                 interactive=True,
             )
-            model_custom = gr.Textbox(label="ตำแหน่งโมเดลแบบกำหนดเอง",value="hf://VIZINTZOR/F5-TTS-THAI-E3/model_650000.pt", visible=False, interactive=True)
+            model_custom = gr.Textbox(label="ตำแหน่งโมเดลแบบกำหนดเอง",value="hf://VIZINTZOR/F5-TTS-THAI/model_650000.pt", visible=False, interactive=True)
             model_status = gr.Textbox(label="สถานะโมเดล", value="")
             load_custom_btn = gr.Button("โหลด⭮",variant="primary")
     

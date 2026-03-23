@@ -14,7 +14,7 @@ import torch
 import torchaudio
 from huggingface_hub import hf_hub_download
 
-from f5_tts.model import DiT
+from f5_tts.model.backbones.dit import DiT
 from f5_tts.infer.utils_infer import (
     chunk_text,
     preprocess_ref_audio_text,

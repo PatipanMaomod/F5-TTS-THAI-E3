@@ -1814,7 +1814,8 @@ Skip ข้ามขั้นตอนนี้หากคุณมีชุด
 def main(port, host, share, api):
     global app
     print("Starting app...")
-    app.queue(api_open=api).launch(server_name=host, server_port=port, share=share, show_api=api)
+    #app.queue(api_open=api).launch(server_name=host, server_port=port, share=share, show_api=api)
+    app.queue(api_open=api).launch(server_name=host, server_port=port, share=share)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 import re
 from ssg import syllable_tokenize
 
+
 def number2text(text):
     thai_digits = {
         0: "ศูนย์", 1: "หนึ่ง", 2: "สอง", 3: "สาม", 4: "สี่",
@@ -92,31 +93,33 @@ def number2text(text):
 
     return process_text(text)
 
+
 def remove_symbol(text):
-    symbols = ",.{}[]()-_?/\\|!*%$&@#^<>+-\";:~\`=“”"
+    symbols = r",.{}[]()-_?/\\|!*%$&@#^<>+-\";:~`=“”"
     for symbol in symbols:
         text = text.replace(symbol, '')
-    text = text.replace(" ๆ","ๆ")
+    text = text.replace(" ๆ", "ๆ")
     return text
-    
+
+
 def maiyamok(text):
-    
     cleaned_symbols = remove_symbol(text)
 
     words = syllable_tokenize(cleaned_symbols)
-    
+
     result = []
     i = 0
     while i < len(words):
         if i + 1 < len(words) and words[i + 1] == "ๆ":
             result.append(words[i])
-            result.append(words[i])  
-            i += 2 
+            result.append(words[i])
+            i += 2
         else:
             result.append(words[i])
             i += 1
-    
+
     return "".join(result)
+
 
 def normalize_text(text):
     text = text.lower()
@@ -126,8 +129,9 @@ def normalize_text(text):
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
+
 if __name__ == "__main__":
-    
+
     test_cases = [
         "วันที่ ฉันสนุกมากๆ",
         "ดีมากๆ",
@@ -135,7 +139,7 @@ if __name__ == "__main__":
         "วันที่ 15 มิถุนายน 2556 ฉันสนุกมากๆ และกินอร่อยๆ",
         "Today เป็นวันเกิดของฉัน วันที่ 20 ฉันอยากให้คุณ listern to me."
     ]
-    
+
     for text in test_cases:
         result = normalize_text(text)
         print(f"Original: {text} -> Converted: {result}")

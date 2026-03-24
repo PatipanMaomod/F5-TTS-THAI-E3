@@ -1,3 +1,4 @@
+.gitignore
 Inference.ipynb
 LICENSE
 README.md
@@ -9,6 +10,7 @@ ruff.toml
 train.bat
 ckpts/README.md
 data/librispeech_pc_test_clean_cross_sentence.lst
+data/isan_char/metadata.csv
 src/f5_tts/api.py
 src/f5_tts/f5_tts_webui.py
 src/f5_tts/socket_server.py

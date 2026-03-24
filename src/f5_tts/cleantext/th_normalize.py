@@ -119,8 +119,11 @@ def maiyamok(text):
     return "".join(result)
 
 def normalize_text(text):
+    text = text.lower()
     text = maiyamok(text)
+    text = re.sub(r'(\d+)', r' \1 ', text)
     text = number2text(text)
+    text = re.sub(r'\s+', ' ', text).strip()
     return text
 
 if __name__ == "__main__":

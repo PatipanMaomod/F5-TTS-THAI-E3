@@ -2,3 +2,7 @@
 *.pt
 *.pth
 *.ckpt
+
+
+.gradio
+*.wav
